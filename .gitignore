@@ -1,0 +1,16 @@
+# Ignore Python env
+renv/
+__pycache__/
+*.pyc
+db.sqlite3
+
+# Django secrets
+.env
+
+# React
+node_modules/
+build/
+
+# VSCode or OS stuff
+.DS_Store
+*.log
