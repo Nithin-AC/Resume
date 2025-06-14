@@ -1,0 +1,26 @@
+[
+{
+  "model": "api.fruit",
+  "pk": 1,
+  "fields": {
+    "name": "grape",
+    "color": "green"
+  }
+},
+{
+  "model": "api.fruit",
+  "pk": 2,
+  "fields": {
+    "name": "Apple",
+    "color": "red"
+  }
+},
+{
+  "model": "api.fruit",
+  "pk": 3,
+  "fields": {
+    "name": "Cherry",
+    "color": "red"
+  }
+}
+]
