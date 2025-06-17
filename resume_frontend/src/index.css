@@ -2,6 +2,16 @@
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   color: whitesmoke;
 }
-*{
-  background-color:blueviolet;
+body{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: larger;
+}
+input{
+  margin-top: 20px;
+  margin-right:20px;
+}
+button{
+margin: 30px;
 }
