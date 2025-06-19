@@ -60,9 +60,10 @@ function Register() {
       <button onClick={adduser}>Register</button>
       <h3>Already have account?</h3>
       <button onClick={() => navigate("/login")}>Login</button>
+      <button>continue with google</button>
+
     </>
   );
 }
 
 export { Register };
-

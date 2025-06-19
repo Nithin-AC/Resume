@@ -28,7 +28,7 @@ function Home() {
         <div>
           <h2>Hello, {username} 👋</h2>
           <button onClick={logout}>Logout</button>
-          <button>reset password</button>
+         <button onClick={()=>navigate("/reset")}>Reset password</button>
         </div>
       ) : (
         <h2>You are not logged in.</h2>

@@ -17,7 +17,7 @@ function Reset() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`  // ✅ Fixed here
         },
         body: JSON.stringify({
           old_password: oldpassword,
@@ -43,7 +43,7 @@ function Reset() {
   }
 
   return (
-    <form onSubmit={(e) => { e.preventDefault(); resetpassword(); }}>
+    <>
       <input
         type="password"
         value={oldpassword}
@@ -56,10 +56,10 @@ function Reset() {
         onChange={(e) => setnewpassword(e.target.value)}
         placeholder="Enter new password"
       />
-      <button type="submit" disabled={!oldpassword || !newpassword}>
+      <button onClick={resetpassword} disabled={!oldpassword || !newpassword}>
         Set new password
       </button>
-    </form>
+    </>
   );
 }
 

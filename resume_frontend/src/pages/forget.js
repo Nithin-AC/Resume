@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -39,7 +40,7 @@ function Forget() {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.message === "OTP verified") {
+        if (data.message === "OTP verified successfully." || data.message === "OTP verified") {
           setstep(3);
         } else {
           alert(data.error || "Invalid OTP");
@@ -56,16 +57,17 @@ function Forget() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ otp, new_password: password })
+      body: JSON.stringify({
+        email: email,
+        new_password: password
+      })
     })
       .then(async res => {
         const data = await res.json();
-        console.log("Status:", res.status, "Data:", data);
-        if (res.ok && data.tokens) {
-          alert("Password reset successful. Logging in...");
-          localStorage.setItem("access", data.tokens.access);
-          localStorage.setItem("refresh", data.tokens.refresh);
-          navigate("/home");
+        console.log("Reset response:", res.status, data);
+        if (res.ok) {
+          alert("Password reset successful.");
+          navigate("/login");  // 🔁 You’ll login manually from here
         } else {
           alert(data.error || data.detail || "Reset failed");
         }
@@ -113,7 +115,7 @@ function Forget() {
             onChange={e => setpassword(e.target.value)}
             placeholder="Enter new password"
           />
-          <button onClick={resetPassword} disabled={!password}>Reset & Login</button>
+          <button onClick={resetPassword} disabled={!password}>Reset</button>
         </>
       )}
     </>
