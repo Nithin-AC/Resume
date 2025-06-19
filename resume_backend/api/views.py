@@ -59,8 +59,10 @@ class ForgotPassword(APIView):
             return Response({'error': 'User does not exist.'}, status=404)
 
         otp = get_random_string(length=6, allowed_chars='0123456789')
+
+        # Store OTP and email mapping
         cache.set(f'otp_{email}', otp, timeout=600)
-        request.session['otp_email'] = email
+        cache.set(f'email_for_otp_{otp}', email, timeout=600)
 
         send_mail(
             subject="Your OTP for Password Reset",
@@ -70,50 +72,46 @@ class ForgotPassword(APIView):
         )
 
         return Response({'message': 'OTP sent to your email.'}, status=200)
+
     
 class Verify(APIView):
     def post(self, request):
         otp = request.data.get('otp')
-        email = request.session.get('otp_email')  # previously stored
+        email = cache.get(f'email_for_otp_{otp}')
+
         if not email:
-            return Response({'error': 'Session expired. Please try again.'}, status=400)
+            return Response({'error': 'OTP expired or invalid.'}, status=400)
 
-        cached_otp = cache.get(f'otp_{email}')
-        if cached_otp is None:
-            return Response({'error': 'OTP expired or not found.'}, status=400)
+        real_otp = cache.get(f'otp_{email}')
+        if real_otp != otp:
+            return Response({'error': 'Incorrect OTP.'}, status=400)
 
-        if otp == cached_otp:
-            
-            cache.delete(f'otp_{email}')
-            return Response({'message': 'OTP verified successfully.'})
-        else:
-            return Response({'error': 'Invalid OTP.'}, status=400)
+        # ✅ Success — remove used OTPs
+        cache.delete(f'otp_{email}')
+        cache.delete(f'email_for_otp_{otp}')
+
+        # ✅ Return email to frontend for next step
+        return Response({'message': 'OTP verified successfully.', 'email': email})
+
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-
-class ResetPasswordSerializer(serializers.Serializer):
-    new_password = serializers.CharField(write_only=True, min_length=6)
-
 class ResetPassword(APIView):
     def post(self, request):
-        email = request.session.get('otp_email')
-        if not email:
-            return Response({'error': 'Session expired. Please verify OTP again.'}, status=400)
+        email = request.data.get('email')  
+        password = request.data.get('new_password')
 
-        serializer = ResetPasswordSerializer(data=request.data)
-        if serializer.is_valid():
-            user = User.objects.filter(email=email).first()
-            if not user:
-                return Response({'error': 'User not found.'}, status=404)
+        if not email or not password:
+            return Response({'error': 'Missing email or password.'}, status=400)
 
-           
-            user.password = make_password(serializer.validated_data['new_password'])
-            user.save()
+        user = User.objects.filter(email=email).first()
+        if not user:
+            return Response({'error': 'User not found.'}, status=404)
 
-            request.session.pop('otp_email', None)
+        user.password = make_password(password)
+        user.save()
 
-            return Response({'message': 'Password has been reset successfully.'})
-        return Response(serializer.errors, status=400)
+        return Response({'message': 'Password reset successful.'})
+
 
 # views.py
 class ChangePassword(APIView):

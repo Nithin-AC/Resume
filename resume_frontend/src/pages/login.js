@@ -53,7 +53,10 @@ function Login() {
       <button onClick={handlelogin}>Login</button>
       <h3>Don't have an account?</h3>
       <button onClick={() => navigate("/register")}>Sign up</button>
+      <button onClick={()=>navigate("/forget")} >Forget password</button>
+      <button>continue with google</button>
     </>
+
   );
 }
 

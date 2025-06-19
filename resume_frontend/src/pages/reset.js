@@ -1,49 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-function Reset(){
-    const [data,setdata]  = useState([]);
-    const [newpassword,setnewpassword] = useState("");
-    const [oldpassword,setoldpassword] = useState("");
-    useEffect(()=>{
-        fetch("http://127.0.0.1:8000/api/fruits/")
-        .then((res)=>res.json())
-        .then((response)=>{
-            setdata(response)
-        })
-    } ,[])
+function Reset() {
+  const [newpassword, setnewpassword] = useState("");
+  const [oldpassword, setoldpassword] = useState("");
 
-    function resetpassword(){
-        const item= data.find((obj)=>obj.password===oldpassword);
-        if (!item) {
-            alert("Old password not found!");
-            return;
-          }
+  async function resetpassword() {
+    const token = localStorage.getItem("token");
 
-        fetch("http://127.0.0.1:8000/api/fruits/",{
-            method: "PATCH",
-            body: JSON.stringify({ password:newpassword}),
-            headers: {
-              "Content-Type": "application/json; charset=UTF-8"
-        }
-    })
-    .then(res => res.json())
-    .then(updated => {
-        setdata(data.map(obj => obj.password === oldpassword ? updated : obj));
-        setoldpassword("")
-        setnewpassword("")
-        alert("Password updated successfully!");
-      })
-      .catch((err) => {
-        console.error("Error updating password:", err);
-        alert("Something went wrong");
-      });
+    if (!token) {
+      alert("Not logged in");
+      return;
     }
 
-    return(
-        <>
-        <input value={oldpassword} onChange={(e)=>{setoldpassword(e.target.value)}} placeholder="Enter old passowrd" />
-        <input value={newpassword} onChange={(e)=>{setnewpassword(e.target.value)}} placeholder="Enter new password"/>
-        <button onClick={resetpassword} >Set new password</button>
-        </>
-    )
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/change-password/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          old_password: oldpassword,
+          new_password: newpassword
+        })
+      });
+
+      const data = await res.json();
+      console.log("Status:", res.status);
+      console.log("Response:", data);
+
+      if (res.ok) {
+        alert("Password updated successfully!");
+        setoldpassword("");
+        setnewpassword("");
+      } else {
+        alert("Failed to update password: " + (data.detail || JSON.stringify(data)));
+      }
+    } catch (err) {
+      console.error("Error updating password:", err);
+      alert("Something went wrong");
+    }
+  }
+
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); resetpassword(); }}>
+      <input
+        type="password"
+        value={oldpassword}
+        onChange={(e) => setoldpassword(e.target.value)}
+        placeholder="Enter old password"
+      />
+      <input
+        type="password"
+        value={newpassword}
+        onChange={(e) => setnewpassword(e.target.value)}
+        placeholder="Enter new password"
+      />
+      <button type="submit" disabled={!oldpassword || !newpassword}>
+        Set new password
+      </button>
+    </form>
+  );
 }
+
+export { Reset };
