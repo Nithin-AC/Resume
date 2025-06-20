@@ -15,6 +15,8 @@ from django.core.cache import cache
 from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from rest_framework.permissions import IsAuthenticated
+from google.oauth2 import id_token
+from google.auth.transport import requests
 User=get_user_model()
 
 class FruitList(generics.ListCreateAPIView):
@@ -123,3 +125,35 @@ class ChangePassword(APIView):
             serializer.save()
             return Response({'message': 'Password changed'})
         return Response(serializer.errors, status=400)
+
+
+class GoogleLoginView(APIView):
+    def post(self, request):
+        token = request.data.get('token')
+
+        try:
+            # Verify token using Google
+            idinfo = id_token.verify_oauth2_token(token, requests.Request())
+            email = idinfo['email']
+
+            # Get or create user
+            user, created = User.objects.get_or_create(
+                            email=email,
+                            defaults={'username': email.split('@')[0]}
+                        )
+                                
+
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+
+            return Response({
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+                  'user': {
+                    'id': user.id,
+                    'username': user.username,
+                    'email': user.email,
+                }
+            })
+        except ValueError:
+            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
