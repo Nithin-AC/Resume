@@ -129,31 +129,51 @@ class ChangePassword(APIView):
 
 class GoogleLoginView(APIView):
     def post(self, request):
-        token = request.data.get('token')
+        id_token_from_client = request.data.get("id_token")
+        if not id_token_from_client:
+            return Response({"error": "No id_token provided"}, status=400)
 
         try:
-            # Verify token using Google
-            idinfo = id_token.verify_oauth2_token(token, requests.Request())
-            email = idinfo['email']
+            # Replace with your actual client ID
+            CLIENT_ID = "440923686502-ntt2cvss5dcaobolfsetp2q3dkf2jmd9.apps.googleusercontent.com"
+            idinfo = id_token.verify_oauth2_token(
+                id_token_from_client,
+                requests.Request(),
+                CLIENT_ID
+            )
 
-            # Get or create user
-            user, created = User.objects.get_or_create(
-                            email=email,
-                            defaults={'username': email.split('@')[0]}
-                        )
-                                
+            email = idinfo.get("email")
+            if not email:
+                return Response({"error": "Email not found in token"}, status=400)
 
-            # Generate JWT tokens
+            # Find or create the user
+            user = User.objects.filter(email=email).first()
+            if not user:
+                username = email.split("@")[0]
+                user = User.objects.create(
+                    username=username,
+                    email=email
+                )
+                user.set_unusable_password()
+                user.save()
+
             refresh = RefreshToken.for_user(user)
 
             return Response({
-                'access': str(refresh.access_token),
-                'refresh': str(refresh),
-                  'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
+                "tokens": {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh)
+                },
+                "user": {
+                    "username": user.username,
+                    "email": user.email
                 }
             })
-        except ValueError:
-            return Response({"error": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
+
+        except ValueError as ve:
+            print("Google Token Error:", ve)
+            return Response({"error": f"Invalid token: {str(ve)}"}, status=400)
+
+        except Exception as e:
+            print("Unexpected Error:", e)
+            return Response({"error": f"Server error: {str(e)}"}, status=500)

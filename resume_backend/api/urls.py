@@ -9,5 +9,5 @@ urlpatterns = [
     path('verify-otp/',Verify.as_view()),
     path('reset/',ResetPassword.as_view()),
     path('change-password/',ChangePassword.as_view()),
-    path('auth/google/',GoogleLogin.as_view()),
+    path('auth/google/',GoogleLoginView.as_view()),
 ]
