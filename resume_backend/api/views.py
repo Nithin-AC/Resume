@@ -16,7 +16,11 @@ from django.core.mail import send_mail
 from django.utils.crypto import get_random_string
 from rest_framework.permissions import IsAuthenticated
 from google.oauth2 import id_token
-from google.auth.transport import requests
+import requests
+import google.generativeai as genai
+from rest_framework.permissions import IsAuthenticated
+from .utils import *
+
 User=get_user_model()
 
 class FruitList(generics.ListCreateAPIView):
@@ -177,3 +181,108 @@ class GoogleLoginView(APIView):
         except Exception as e:
             print("Unexpected Error:", e)
             return Response({"error": f"Server error: {str(e)}"}, status=500)
+
+class ResumeExtracter(APIView):
+    def post(self, request):
+        file=request.FILES.get('resume')
+        description=request.data.get('description')
+        if not file:
+         return Response({"error": "No file uploaded."}, status=400)
+        filename = file.name.lower()
+        try :
+            if filename.endswith(".pdf"):
+                text=extract_text_from_pdf(file)
+            elif filename.endswith(".docx"):
+                text = extract_text_from_docx(file)
+            else:
+                return Response({"error": "Unsupported file type."}, status=400)
+            return Response({"text": text,
+                             "description":description
+                             }, status=200)
+
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
+
+
+
+
+class ResumeAnalysisView(APIView):
+    def post(self, request):
+        resume = request.data.get("resume")
+        job_description = request.data.get("job_description")
+
+        if not resume or not job_description:
+            return Response({"error": "Both resume and job_description are required."}, status=400)
+
+        headers = {
+    "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
+            }
+
+        prompt = f"""
+You're an expert resume reviewer. Compare the following resume with the job description and give:
+1. Match Score (0 to 100)
+2. Missing keywords
+3. Suggestions to improve
+4. ATS-friendliness feedback
+
+Resume:
+{resume}
+
+Job Description:
+{job_description}
+"""
+
+        payload = {
+            "model": "mistralai/mistral-7b-instruct",  # free and high-quality
+            "messages": [
+                {"role": "user", "content": prompt}
+            ]
+        }
+
+        try:
+            response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+            response.raise_for_status()
+            result = response.json()
+            return Response({"analysis": result["choices"][0]["message"]["content"]}, status=200)
+
+        except requests.RequestException as e:
+            return Response({"error": str(e)}, status=500)
+
+
+
+# Chat Bot
+
+import os
+
+# Configure Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+model = genai.GenerativeModel("models/gemini-2.5-flash")
+class gemini_chat(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self,request):
+        content=request.data.get('message')
+        if not content:
+            return Response({"error": "Message is required"}, status=status.HTTP_400_BAD_REQUEST)
+        messages = ChatMessage.objects.filter(user=request.user)
+        counter=0
+        history=[]
+
+        for i in messages:
+            history.append({'role': i.role, 'parts': [i.content]})
+            counter=counter+1
+        try:
+            chat = model.start_chat(history=history)
+            response = chat.send_message(content)
+
+            # Save both user message and Gemini response
+            ChatMessage.objects.create(user=request.user, role="user", content=content)
+            ChatMessage.objects.create(user=request.user, role="model", content=response.text)
+            return Response({"reply": response.text})
+        except  Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        
+        
+    
