@@ -19,11 +19,9 @@
 // }
 
 // export {App1}
-
-
 import React, { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import Home from "./pages/home";
+import { Home } from "./pages/home";
 import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import { Protectedpage } from "./pages/protectedpage";
@@ -34,7 +32,7 @@ import { Navbar } from "./pages/navbar";
 import { Contactus } from "./pages/contactus";
 import { Tips } from "./pages/tips";
 import { Aboutus } from "./pages/aboutus";
-import LoginModal from "./pages/loginmodal"; // <- Make sure path is correct
+import LoginModal from "./pages/loginmodal"; 
 
 function App1() {
   const [showLoginModal, setShowLoginModal] = useState(false);

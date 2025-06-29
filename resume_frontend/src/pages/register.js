@@ -89,7 +89,7 @@ function Register() {
             fullWidth
             margin="normal"
           />
-          <button className="register-button" onClick={adduser}>Register</button>
+          <button className="login-button" onClick={adduser}>Register</button>
           <div className="login-links">
             <p>Already have an account?</p>
             <button className="secondary-button" onClick={() => navigate("/login")}>Login</button>

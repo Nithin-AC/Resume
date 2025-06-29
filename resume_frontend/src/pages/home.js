@@ -262,17 +262,6 @@ function Home() {
   );
 }
 
-export default Home ;
+export { Home } ;
 
  
-// import React from "react";
-
-// function Home(){
-//   return 
-//   <>
-  
-//   </>
-
-// }
-
-// export default Home
