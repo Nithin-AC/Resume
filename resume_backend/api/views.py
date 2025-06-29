@@ -189,7 +189,7 @@ from rest_framework.response import Response
 from .utils import extract_text_from_pdf, extract_text_from_docx  # Ensure these are defined
 
 class ResumeExtracter(APIView):
-    # permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated] 
     def post(self, request):
         file = request.FILES.get('resume')
         description = request.data.get('description')
