@@ -19,6 +19,8 @@ from google.oauth2 import id_token
 import requests
 import google.generativeai as genai
 from rest_framework.permissions import IsAuthenticated
+from google.oauth2 import id_token
+from google.auth.transport.requests import Request  # ✅ this is correct
 from .utils import *
 
 User=get_user_model()
@@ -142,7 +144,7 @@ class GoogleLoginView(APIView):
             CLIENT_ID = "440923686502-ntt2cvss5dcaobolfsetp2q3dkf2jmd9.apps.googleusercontent.com"
             idinfo = id_token.verify_oauth2_token(
                 id_token_from_client,
-                requests.Request(),
+                Request(),
                 CLIENT_ID
             )
 
