@@ -11,6 +11,5 @@ urlpatterns = [
     path('change-password/',ChangePassword.as_view()),
     path('auth/google/',GoogleLoginView.as_view()),
     path('extract/',ResumeExtracter.as_view()),
-    path('analysis/',ResumeAnalysisView.as_view()),
     path("gemini-chat/", gemini_chat.as_view(), name="gemini_chat"),
 ]

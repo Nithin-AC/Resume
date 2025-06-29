@@ -182,76 +182,76 @@ class GoogleLoginView(APIView):
             print("Unexpected Error:", e)
             return Response({"error": f"Server error: {str(e)}"}, status=500)
 
+import os
+import requests
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .utils import extract_text_from_pdf, extract_text_from_docx  # Ensure these are defined
+
 class ResumeExtracter(APIView):
+    # permission_classes = [IsAuthenticated] 
     def post(self, request):
-        file=request.FILES.get('resume')
-        description=request.data.get('description')
+        file = request.FILES.get('resume')
+        description = request.data.get('description')
+
         if not file:
-         return Response({"error": "No file uploaded."}, status=400)
+            return Response({"error": "No file uploaded."}, status=400)
+
         filename = file.name.lower()
-        try :
+
+        try:
             if filename.endswith(".pdf"):
-                text=extract_text_from_pdf(file)
+                text = extract_text_from_pdf(file)
             elif filename.endswith(".docx"):
                 text = extract_text_from_docx(file)
             else:
                 return Response({"error": "Unsupported file type."}, status=400)
-            return Response({"text": text,
-                             "description":description
-                             }, status=200)
 
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
-
-
-
-
-class ResumeAnalysisView(APIView):
-    def post(self, request):
-        resume = request.data.get("resume")
-        job_description = request.data.get("job_description")
-
-        if not resume or not job_description:
-            return Response({"error": "Both resume and job_description are required."}, status=400)
-
-        headers = {
-    "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
+            headers = {
+                "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}"
             }
 
-        prompt = f"""
-You're an expert resume reviewer. Compare the following resume with the job description and give:
+            prompt = f"""
+You are an expert resume reviewer. Compare the following resume with the job description and provide:
 1. Match Score (0 to 100)
 2. Missing keywords
 3. Suggestions to improve
 4. ATS-friendliness feedback
 
 Resume:
-{resume}
+{text}
 
 Job Description:
-{job_description}
+{description}
 """
 
-        payload = {
-            "model": "mistralai/mistral-7b-instruct",  # free and high-quality
-            "messages": [
-                {"role": "user", "content": prompt}
-            ]
-        }
+            payload = {
+                "model": "mistralai/mistral-7b-instruct",
+                "messages": [{"role": "user", "content": prompt}]
+            }
 
-        try:
-            response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+            response = requests.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=payload
+            )
             response.raise_for_status()
+
             result = response.json()
-            return Response({"analysis": result["choices"][0]["message"]["content"]}, status=200)
+            analysis = result.get("choices", [{}])[0].get("message", {}).get("content")
+
+            if analysis:
+                return Response({"analysis": analysis}, status=200)
+            else:
+                return Response({"error": "No analysis received."}, status=500)
 
         except requests.RequestException as e:
-            return Response({"error": str(e)}, status=500)
+            return Response({"error": f"Request failed: {str(e)}"}, status=500)
+        except Exception as e:
+            return Response({"error": f"Internal server error: {str(e)}"}, status=500)
 
 
 
-# Chat Bot
 
 import os
 
