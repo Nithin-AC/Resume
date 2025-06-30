@@ -1170,10 +1170,9 @@ html, body {
   transition: border-color 0.3s, box-shadow 0.3s;
   background-color: #f9f9ff;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 800;
   
 }
-
-
 .otp-box1:focus {
   border-color: #1976d2;
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.3);
@@ -1244,11 +1243,16 @@ html, body {
 
 }
 @media (max-width: 340px) {
+  .otp-input-group{
+    gap: 2px;
+  }
   .otp-box1 {
-    width: 35px;          
-    height: 45px;
+    width: 40px;
+    height: 40px;
+    font-size: 2px;
   }
 }
+
 
 /* Forget password */
 

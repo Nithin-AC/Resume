@@ -33,7 +33,7 @@ import { Contactus } from "./pages/contactus";
 import { Tips } from "./pages/tips";
 import { Aboutus } from "./pages/aboutus";
 import LoginModal from "./pages/loginmodal"; 
-
+import { HomeAuthGuard } from "./homeauth";
 function App1() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();
@@ -42,15 +42,15 @@ function App1() {
     <>
       <div className={showLoginModal ? "blurred" : ""}>
         <Navbar
-          onProtectedClick={() => setShowLoginModal(true)} // Custom event trigger from navbar
+          onProtectedClick={() => setShowLoginModal(true)}
         />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
+          <Route path="/home" element={<HomeAuthGuard><Home /></HomeAuthGuard>} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/protectedpage" element={<RequireAuth><Protectedpage /></RequireAuth>} />
-          <Route path="/reset" element={<RequireAuth><Reset /></RequireAuth>} />
+          <Route path="/reset" element={<RequireAuth><Reset/></RequireAuth>} />
           <Route path="/forget" element={<Forget />} />
           <Route path="/contactus" element={<Contactus />} />
           <Route path="/tips" element={<Tips />} />
