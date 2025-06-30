@@ -101,7 +101,7 @@ class Verify(APIView):
         # ✅ Return email to frontend for next step
         return Response({'message': 'OTP verified successfully.', 'email': email})
 
-from rest_framework import serializers
+
 from django.contrib.auth.hashers import make_password
 class ResetPassword(APIView):
     def post(self, request):
@@ -186,12 +186,10 @@ class GoogleLoginView(APIView):
 
 import os
 import requests
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .utils import extract_text_from_pdf, extract_text_from_docx  # Ensure these are defined
+  
 
 class ResumeExtracter(APIView):
-    permission_classes = [IsAuthenticated] 
+    # permission_classes = [IsAuthenticated] 
     def post(self, request):
         file = request.FILES.get('resume')
         description = request.data.get('description')
@@ -204,8 +202,17 @@ class ResumeExtracter(APIView):
         try:
             if filename.endswith(".pdf"):
                 text = extract_text_from_pdf(file)
+                github_url = extract_github_url(text)
+                linkedin_url = extract_linkedin_url(text)
+                print(linkedin_url)
+                github_data=None
+                if github_url:
+                    github_data = fetch_full_github_data(github_url)
             elif filename.endswith(".docx"):
                 text = extract_text_from_docx(file)
+                github_url = extract_github_url(text)
+                linkedin_url = extract_linkedin_url(text)
+
             else:
                 return Response({"error": "Unsupported file type."}, status=400)
 
@@ -215,16 +222,27 @@ class ResumeExtracter(APIView):
 
             prompt = f"""
 You are an expert resume reviewer. Compare the following resume with the job description and provide:
-1. Match Score (0 to 100)
+1. Match Score (0 to 100) (include everything 2,3,4,5,6)
 2. Missing keywords
 3. Suggestions to improve
 4. ATS-friendliness feedback
+5. if you get any data about git hub in the prompt please review that also carefully and provide more detailed suggestions(regarding projects and detailing it)
+6. try to access his linked in too and give suggestions to improve
 
+Note : Dont make like third person (use you)
 Resume:
 {text}
 
 Job Description:
 {description}
+
+Github data:
+{github_data}
+
+Linkedin Url:
+{linkedin_url}
+
+
 """
 
             payload = {
