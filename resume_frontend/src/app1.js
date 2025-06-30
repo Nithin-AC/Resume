@@ -17,8 +17,8 @@
 //         </Routes>
 //     )
 // }
-
 // export {App1}
+
 import React, { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Home } from "./pages/home";
@@ -57,11 +57,10 @@ function App1() {
           <Route path="/aboutus" element={<Aboutus />} />
         </Routes>
       </div>
-
-      {/* Modal shown here */}
       {showLoginModal && (
         <LoginModal
-          onSuccess={() => {
+          onCancel={() => setShowLoginModal(false)}
+          onLogin={() => {
             setShowLoginModal(false);
             navigate("/login");
           }}
@@ -70,5 +69,4 @@ function App1() {
     </>
   );
 }
-
 export { App1 };

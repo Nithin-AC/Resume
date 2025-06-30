@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Box from '@mui/material/Box';
 import { Typewriter } from 'react-simple-typewriter';
-import FAQSection from "./faq";
+import{ FAQSection} from "./faq";
 import img1 from './img1.png';
 import { Chatbot } from "./chatbot.js";
 function Home() {
@@ -218,6 +218,9 @@ function Home() {
   </div>
 </div>
 
+<div className="down6">
+    <FAQSection/>
+</div>
 
 
         

@@ -5,7 +5,7 @@ function Reset(){
     const [newpassword,setnewpassword] = useState("");
     const [oldpassword,setoldpassword] = useState("");
     useEffect(()=>{
-        fetch("http://127.0.0.1:8000/api/fruits/")
+        fetch("http://127.0.0.1:8000/api/reset/")
         .then((res)=>res.json())
         .then((response)=>{
             setdata(response)
@@ -19,7 +19,7 @@ function Reset(){
             return;
           }
 
-        fetch("http://127.0.0.1:8000/api/fruits/",{
+        fetch("http://127.0.0.1:8000/api/reset/",{
             method: "PATCH",
             body: JSON.stringify({ password:newpassword}),
             headers: {
@@ -41,9 +41,15 @@ function Reset(){
 
     return(
         <>
+        <div className="out">
+          <div className="forget1" >
+          <h1 className="login-heading" >Reset Password</h1>
+          <p className="forget-subtitle" >Already know your old password? Go ahead and give it an upgrade.</p>
         <input value={oldpassword} onChange={(e)=>{setoldpassword(e.target.value)}} placeholder="Enter old passowrd" />
         <input value={newpassword} onChange={(e)=>{setnewpassword(e.target.value)}} placeholder="Enter new password"/>
-        <button onClick={resetpassword} >Set new password</button>
+        <button className="login-button" onClick={resetpassword} >Set new password</button>
+          </div>
+        </div>
         </>
     )
 }
