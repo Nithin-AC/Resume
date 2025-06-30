@@ -26,6 +26,7 @@ function Register() {
             localStorage.setItem("token", data.tokens.access);
             localStorage.setItem("refreshtoken", data.tokens.refresh);
             localStorage.setItem("username", username);
+            localStorage.setItem("loginType", "manual");
             navigate("/home");
           } else {
             alert("Registration failed");
