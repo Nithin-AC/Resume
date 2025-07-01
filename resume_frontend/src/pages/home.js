@@ -8,13 +8,15 @@ function Home() {
   const [username, setusername] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
   const [uploadedFileObj, setUploadedFileObj] = useState(null);
-  const [score, setScore] = useState(null);
+  // const [score, setScore] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
-  const [chat,setchat] = useState(false);
+  const[analysis,setanalysis] = useState("");
+  const [chat, setchat] = useState(false);
 
-  function chatopen(){
-    console.log("Chat clicked");
-      setchat(!chat)
+  const toggleChat = () => setchat(prev => !prev);
+  
+  function chatopen() {
+    setchat(!chat);
   }
 
   useEffect(() => {
@@ -39,7 +41,48 @@ function Home() {
   };
 
 
+  function handlescore() {
+    if (!jobDescription || !uploadedFileObj) {
+      alert("Upload file and enter job description");
+      return;
+    }
   
+    const formData = new FormData();
+    formData.append("resume", uploadedFileObj);
+    formData.append("description", jobDescription);
+  
+    const token = localStorage.getItem("token");
+  
+    fetch("http://127.0.0.1:8000/api/extract/", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      body: formData
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.analysis) {
+          console.log("Resume Analysis:", data.analysis);
+          setanalysis(data.analysis);
+          // const scoreMatch = data.analysis.match(/Match Score:\s*([0-9]+)\s*out of\s*100/i);
+          // if (scoreMatch && scoreMatch[1]) {
+          //   const extractedScore = parseInt(scoreMatch[1]);
+          //   setScore(extractedScore);  // this updates your `score` state
+          //   console.log("Extracted Match Score:", extractedScore);
+          // }
+          alert("Analysis complete!");
+
+        } else {
+          alert(data.error || "Something went wrong.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        alert("Server error");
+      });
+  }
+
   return (
     <>
     <div className="outer">
@@ -108,14 +151,17 @@ function Home() {
     </p>
   )}
 
-  {score !== null && (
-  <p style={{ marginTop: "10px", fontWeight: "600", color: "#2e7d32" }}>
-    Resume Score: {score} / 100
-  </p>
+{analysis && (
+  <div className="analysis-box">
+    <h3 className="login-heading" >Resume Analysis </h3>
+    <pre style={{ whiteSpace: "pre-wrap", background: "#f4f4f4", padding: "15px", borderRadius: "10px", color: "#333" }}>
+      {analysis}
+    </pre>
+  </div>
 )}
 
 
-<button  className="score-button">Get Score</button>
+<button onClick={handlescore} className="score-button">Get Score</button>
 </div>
 
 </div>
@@ -222,49 +268,60 @@ function Home() {
     <FAQSection/>
 </div>
 
+{chat && (
+        <div className="chatbot-drawer open">
+          <div className="chatbot-header">
+            <h2 style={{ margin: 0 }}>Hironyx Assistant</h2>
+            <button className="chatbot-close" onClick={toggleChat}>&times;</button>
+          </div>
+          <div className="chatbot-separator"></div>
+          <Chatbot onClose={toggleChat} />
+        </div>
+  
+      )}
 
-        
-
-    <div onClick={chatopen} className="chatbot-fixed">
-  <div className="chatbot-circle">
-    <svg
-      className="diamond-icon"
-      viewBox="0 0 100 100"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M50 5 
-           C60 20, 80 40, 95 50 
-           C80 60, 60 80, 50 95 
-           C40 80, 20 60, 5 50 
-           C20 40, 40 20, 50 5 Z"
-        fill="none"
-        stroke="#42a5f5"
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-    <div className="stars">
-      <div className="star one"></div>
-      <div className="star two"></div>
-      <div className="star three"></div>
-      <div className="star four"></div>
-    </div>
-  </div>
-</div>
-
-
-<div>
-  {
-    chat? <Chatbot/>:null
-  }
-</div>
-
+      <div
+        onClick={toggleChat}
+        className="chatbot-fixed"
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          right: "20px",
+          zIndex: 999,
+          cursor: "pointer"
+        }}
+      >
+        <div className="chatbot-circle">
+          <svg
+            className="diamond-icon"
+            viewBox="0 0 100 100"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M50 5 
+              C60 20, 80 40, 95 50 
+              C80 60, 60 80, 50 95 
+              C40 80, 20 60, 5 50 
+              C20 40, 40 20, 50 5 Z"
+              fill="none"
+              stroke="#42a5f5"
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <div className="stars">
+            <div className="star one"></div>
+            <div className="star two"></div>
+            <div className="star three"></div>
+            <div className="star four"></div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
-
 export { Home } ;
 
- 
+
+

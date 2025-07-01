@@ -195,7 +195,7 @@ import requests
 import re
 
 class ResumeExtracter(APIView):
-    # permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated] 
     def post(self, request):
         file = request.FILES.get('resume')
         description = request.data.get('description')
