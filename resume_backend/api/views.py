@@ -188,6 +188,12 @@ import os
 import requests
   
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+import os
+import requests
+import re
+
 class ResumeExtracter(APIView):
     # permission_classes = [IsAuthenticated] 
     def post(self, request):
@@ -200,50 +206,59 @@ class ResumeExtracter(APIView):
         filename = file.name.lower()
 
         try:
+            # Extract resume text and URLs
             if filename.endswith(".pdf"):
                 text = extract_text_from_pdf(file)
-                github_url = extract_github_url(text)
-                linkedin_url = extract_linkedin_url(text)
-                print(linkedin_url)
-                github_data=None
-                if github_url:
-                    github_data = fetch_full_github_data(github_url)
             elif filename.endswith(".docx"):
                 text = extract_text_from_docx(file)
-                github_url = extract_github_url(text)
-                linkedin_url = extract_linkedin_url(text)
-
             else:
                 return Response({"error": "Unsupported file type."}, status=400)
+
+            github_url = extract_github_url(text)
+            linkedin_url = extract_linkedin_url(text)
+            github_data = fetch_full_github_data(github_url) if github_url else None
 
             headers = {
                 "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}"
             }
 
             prompt = f"""
-You are an expert resume reviewer. Compare the following resume with the job description and provide:
-1. Match Score (0 to 100) (include everything 2,3,4,5,6)
-2. Missing keywords
-3. Suggestions to improve
-4. ATS-friendliness feedback
-5. if you get any data about git hub in the prompt please review that also carefully and provide more detailed suggestions(regarding projects and detailing it)
-6. try to access his linked in too and give suggestions to improve
+            You are an expert resume reviewer.
 
-Note : Dont make like third person (use you)
-Resume:
-{text}
+            At the top of your response, start with:
+            **Match Score: XX** (replace XX with a number from 0 to 100)
 
-Job Description:
-{description}
+            Then continue with your analysis:
 
-Github data:
-{github_data}
+            ### Missing Keywords
+            (List technical/skill-based keywords from JD that are missing or weak)
 
-Linkedin Url:
-{linkedin_url}
+            ### Suggestions to Improve
+            (Give detailed, actionable suggestions to improve resume, GitHub, or alignment)
 
+            ### ATS-Friendliness Feedback
+            (Check for formatting, keywords, readability for ATS tools)
 
-"""
+            ### GitHub Review
+            (Analyze each project, code quality, relevance, readme, etc.)
+
+            ### LinkedIn Suggestions
+            (Evaluate headline, about, experience, and projects)
+
+            ---
+
+            Resume:
+            {text}
+
+            Job Description:
+            {description}
+
+            GitHub Info:
+            {github_data}
+
+            LinkedIn URL:
+            {linkedin_url}
+            """
 
             payload = {
                 "model": "mistralai/mistral-7b-instruct",
@@ -256,12 +271,21 @@ Linkedin Url:
                 json=payload
             )
             response.raise_for_status()
-
             result = response.json()
-            analysis = result.get("choices", [{}])[0].get("message", {}).get("content")
+            full_content = result.get("choices", [{}])[0].get("message", {}).get("content")
 
-            if analysis:
-                return Response({"analysis": analysis}, status=200)
+            if full_content:
+                # Extract match score
+                score_match = re.search(r"\*\*Match Score:\s*(\d+)\*\*", full_content)
+                score_value = int(score_match.group(1)) if score_match else None
+
+                # Remove score from analysis if present
+                analysis_text = re.sub(r"\*\*Match Score:\s*\d+\*\*", "", full_content).strip()
+
+                return Response({
+                    "score": score_value,
+                    "analysis": analysis_text
+                }, status=200)
             else:
                 return Response({"error": "No analysis received."}, status=500)
 
@@ -269,8 +293,6 @@ Linkedin Url:
             return Response({"error": f"Request failed: {str(e)}"}, status=500)
         except Exception as e:
             return Response({"error": f"Internal server error: {str(e)}"}, status=500)
-
-
 
 
 import os
