@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.password_validation import validate_password
-
+from django.conf import settings
 User = get_user_model()
 class FruitSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,3 +51,8 @@ class ChangePasswordSerializer(serializers.Serializer):
         user = self.context['request'].user
         user.set_password(self.validated_data['new_password'])
         user.save()
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields=['username','dateofbirth','email','phn','first_name','last_name','photo']
+        read_only_fields = ['username']

@@ -20,7 +20,7 @@ import requests
 import google.generativeai as genai
 from rest_framework.permissions import IsAuthenticated
 from google.oauth2 import id_token
-from google.auth.transport.requests import Request  # ✅ this is correct
+from google.auth.transport.requests import Request  
 from .utils import *
 
 User=get_user_model()
@@ -68,7 +68,7 @@ class ForgotPassword(APIView):
 
         otp = get_random_string(length=6, allowed_chars='0123456789')
 
-        # Store OTP and email mapping
+        
         cache.set(f'otp_{email}', otp, timeout=600)
         cache.set(f'email_for_otp_{otp}', email, timeout=600)
 
@@ -94,11 +94,11 @@ class Verify(APIView):
         if real_otp != otp:
             return Response({'error': 'Incorrect OTP.'}, status=400)
 
-        # ✅ Success — remove used OTPs
+       
         cache.delete(f'otp_{email}')
         cache.delete(f'email_for_otp_{otp}')
 
-        # ✅ Return email to frontend for next step
+       
         return Response({'message': 'OTP verified successfully.', 'email': email})
 
 
@@ -325,6 +325,15 @@ class gemini_chat(APIView):
         except  Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        
-        
+class ProfileUpdate(APIView):
+    permission_classes=[IsAuthenticated]
+    def get(self,request):
+        queryset=User.objects.all()
+        serializer=ProfileSerializer(request.user)
+        return Response(serializer.data, status=200)    
+    def patch(self,request):
+        serializers=ProfileSerializer(request.user,data=request.data,partial=True) 
+        if serializers.is_valid():
+            serializers.save()
+        return Response(serializers.data, status=200) 
     

@@ -1,5 +1,6 @@
 from django.urls import path,include
 from .views import *
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('fruits/', FruitList.as_view(), name='fruit-list'),
@@ -12,4 +13,8 @@ urlpatterns = [
     path('auth/google/',GoogleLoginView.as_view()),
     path('extract/',ResumeExtracter.as_view()),
     path("gemini-chat/", gemini_chat.as_view(), name="gemini_chat"),
+    path("profile/",ProfileUpdate.as_view()),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
