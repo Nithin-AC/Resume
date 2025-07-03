@@ -36,7 +36,7 @@ function Chatbot({ onClose }) {
       if (data.reply) {
         setMessages((prev) => [...prev, { role: "model", text: data.reply }]);
       } else {
-        setMessages((prev) => [...prev, { role: "model", text: "Error: No reply received." }]);
+        setMessages((prev) => [...prev, { role: "model", text: "Kindly log in to begin your conversation."}]);
       }
     } catch (error) {
       console.error("Chat error:", error);

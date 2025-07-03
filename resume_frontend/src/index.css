@@ -618,6 +618,8 @@ html, body {
   align-items: center;
   box-shadow: 0 0 20px #42a5f5, 0 0 40px #2196f3;
   animation: pulse-glow 2s infinite ease-in-out;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .diamond-icon {
@@ -1719,3 +1721,45 @@ html, body {
 }
 
 /* chatbot */
+
+
+/* score */
+.score-container {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+}
+
+.score-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle-progress {
+  transition: stroke-dashoffset 0.3s ease-in-out;
+}
+
+.circle-progress.high svg circle {
+  stroke: #4caf50 !important; /* green */
+}
+
+.circle-progress.medium svg circle {
+  stroke: #ff9800 !important; /* orange */
+}
+
+.circle-progress.low svg circle {
+  stroke: #f44336 !important; /* red */
+}
+
+/* score */

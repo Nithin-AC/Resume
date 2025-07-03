@@ -163,10 +163,195 @@
 
 // export { Forget };
 
+
+// import React, { useState, useRef } from "react";
+// import { useNavigate } from "react-router-dom";
+// import Visibility from "@mui/icons-material/Visibility";
+// import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+// function Forget() {
+//   const [email, setemail] = useState("");
+//   const [otp, setotp] = useState(Array(6).fill(""));
+//   const [password, setpassword] = useState("");
+//   const [step, setstep] = useState(1);
+//   const [showPassword, setShowPassword] = useState(false);
+//   const navigate = useNavigate();
+//   const inputRefs = useRef([]);
+
+//   function sendOTP() {
+//     fetch("http://127.0.0.1:8000/api/forgot-password/", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ email }),
+//       credentials: "include"
+//     })
+//       .then(res => res.json())
+//       .then(data => {
+//         if (data.message) {
+//           alert("OTP sent to your email");
+//           setstep(2);
+//         } else {
+//           alert(data.error || "Error sending OTP");
+//         }
+//       })
+//       .catch(err => {
+//         console.error("OTP error:", err);
+//         alert("Server error while sending OTP");
+//       });
+//   }
+
+//   function verifyOTP() {
+//     const joinedOTP = otp.join("");
+//     fetch("http://127.0.0.1:8000/api/verify-otp/", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ otp: joinedOTP }),
+//       credentials: "include"
+//     })
+//       .then(res => res.json())
+//       .then(data => {
+//         if (data.message === "OTP verified successfully." || data.message === "OTP verified") {
+//           setstep(3);
+//         } else {
+//           alert(data.error || "Invalid OTP");
+//         }
+//       })
+//       .catch(err => {
+//         console.error("Verify error:", err);
+//         alert("Error verifying OTP");
+//       });
+//   }
+
+//   function resetPassword() {
+//     fetch("http://127.0.0.1:8000/api/reset/", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       credentials: "include",
+//       body: JSON.stringify({
+//         email: email,
+//         new_password: password
+//       })
+//     })
+//       .then(async res => {
+//         const data = await res.json();
+//         if (res.ok) {
+//           alert("Password reset successful.");
+//           navigate("/login");
+//         } else {
+//           alert(data.error || data.detail || "Reset failed");
+//         }
+//       })
+//       .catch(err => {
+//         console.error("Reset error:", err);
+//         alert("Reset request failed");
+//       });
+//   }
+
+//   const handleOTPChange = (e, index) => {
+//     const value = e.target.value;
+//     if (/^[0-9]?$/.test(value)) {
+//       const newOTP = [...otp];
+//       newOTP[index] = value;
+//       setotp(newOTP);
+//       if (value && index < 5) {
+//         inputRefs.current[index + 1].focus();
+//       }
+//     }
+//   };
+
+//   const handleKeyDown = (e, index) => {
+//     if (e.key === "Backspace" && !otp[index] && index > 0) {
+//       inputRefs.current[index - 1].focus();
+//     }
+//   };
+
+//   return (
+//     <>
+//       {step === 1 && (
+//         <div className="out">
+//           <div className="forget1">
+//             <h1>Forgot password?</h1>
+//             <h5 className="forget-subtitle">No worries, we'll send you reset instructions</h5>
+//             <div className="email">
+//               <h5>Email Address</h5>
+//             </div>
+//             <input
+//               type="email"
+//               value={email}
+//               onChange={e => setemail(e.target.value)}
+//               placeholder="Enter email"
+//               className="emailinput"
+//             />
+//             <button className="login-button" onClick={sendOTP} disabled={!email}>Send OTP</button>
+//             <button className="login-button" onClick={() => navigate("/login")}>Back to login</button>
+//           </div>
+//         </div>
+//       )}
+
+//       {step === 2 && (
+//         <div className="out">
+//           <div className="forget1">
+//             <h2 className="login-heading">Verify OTP</h2>
+//             <div className="otp-input-group">
+//               {otp.map((digit, idx) => (
+//                 <input
+//                   key={idx}
+//                   type="text"
+//                   maxLength="1"
+//                   value={digit}
+//                   onChange={e => handleOTPChange(e, idx)}
+//                   onKeyDown={e => handleKeyDown(e, idx)}
+//                   ref={el => (inputRefs.current[idx] = el)}
+//                   className="otp-box1"
+//                 />
+//               ))}
+//             </div>
+//             <button className="login-button" onClick={verifyOTP} disabled={otp.includes("")}>Verify</button>
+//           </div>
+//         </div>
+//       )}
+//       {step === 3 && (
+//         <div className="out">
+//           <div className="forget1">
+//             <h2>Reset Password</h2>
+//             <div style={{ position: "relative", width: "100%" }}>
+//               <input
+//                 type={showPassword ? "text" : "password"}
+//                 value={password}
+//                 onChange={e => setpassword(e.target.value)}
+//                 placeholder="Enter new password"
+//                 style={{ width: "100%", paddingRight: "40px" }}
+//               />
+//               <span
+//                 onClick={() => setShowPassword(!showPassword)}
+//                 style={{
+//                   position: "absolute",
+//                   right: "10px",
+//                   top: "50%",
+//                   transform: "translateY(-50%)",
+//                   cursor: "pointer"
+//                 }}
+//               >
+//                 {showPassword ? <VisibilityOff /> : <Visibility />}
+//               </span>
+//             </div>
+//             <button className="login-button" onClick={resetPassword} disabled={!password}>Reset</button>
+//           </div>
+//         </div>
+//       )}
+//     </>
+//   );
+// }
+
+// export { Forget };
+
+
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 function Forget() {
   const [email, setemail] = useState("");
@@ -176,6 +361,16 @@ function Forget() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const inputRefs = useRef([]);
+
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMsg, setAlertMsg] = useState("");
+  const [alertType, setAlertType] = useState("info");
+
+  const showAlert = (msg, type = "info") => {
+    setAlertMsg(msg);
+    setAlertType(type);
+    setAlertOpen(true);
+  };
 
   function sendOTP() {
     fetch("http://127.0.0.1:8000/api/forgot-password/", {
@@ -187,15 +382,15 @@ function Forget() {
       .then(res => res.json())
       .then(data => {
         if (data.message) {
-          alert("OTP sent to your email");
+          showAlert("OTP sent to your email", "success");
           setstep(2);
         } else {
-          alert(data.error || "Error sending OTP");
+          showAlert(data.error || "Error sending OTP", "error");
         }
       })
       .catch(err => {
         console.error("OTP error:", err);
-        alert("Server error while sending OTP");
+        showAlert("Server error while sending OTP", "error");
       });
   }
 
@@ -210,14 +405,15 @@ function Forget() {
       .then(res => res.json())
       .then(data => {
         if (data.message === "OTP verified successfully." || data.message === "OTP verified") {
+          showAlert("OTP verified", "success");
           setstep(3);
         } else {
-          alert(data.error || "Invalid OTP");
+          showAlert(data.error || "Invalid OTP", "error");
         }
       })
       .catch(err => {
         console.error("Verify error:", err);
-        alert("Error verifying OTP");
+        showAlert("Error verifying OTP", "error");
       });
   }
 
@@ -234,15 +430,15 @@ function Forget() {
       .then(async res => {
         const data = await res.json();
         if (res.ok) {
-          alert("Password reset successful.");
-          navigate("/login");
+          showAlert("Password reset successful", "success");
+          setTimeout(() => navigate("/login"), 1500);
         } else {
-          alert(data.error || data.detail || "Reset failed");
+          showAlert(data.error || data.detail || "Reset failed", "error");
         }
       })
       .catch(err => {
         console.error("Reset error:", err);
-        alert("Reset request failed");
+        showAlert("Reset request failed", "error");
       });
   }
 
@@ -266,6 +462,17 @@ function Forget() {
 
   return (
     <>
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={4000}
+        onClose={() => setAlertOpen(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={() => setAlertOpen(false)} severity={alertType} sx={{ width: "100%" }}>
+          {alertMsg}
+        </Alert>
+      </Snackbar>
+
       {step === 1 && (
         <div className="out">
           <div className="forget1">
@@ -309,6 +516,7 @@ function Forget() {
           </div>
         </div>
       )}
+
       {step === 3 && (
         <div className="out">
           <div className="forget1">
