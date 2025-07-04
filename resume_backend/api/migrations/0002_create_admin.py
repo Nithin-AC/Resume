@@ -2,10 +2,10 @@ from django.db import migrations
 from django.contrib.auth.hashers import make_password
 
 def create_superuser(apps, schema_editor):
-    User = apps.get_model('your_app_name', 'YourUserModel')
+    User = apps.get_model('api', 'User')
     User.objects.create(
         username='admin',
-        email='admin@example.com',
+        email='gopalsravani66@gmail.com',
         password=make_password('adminpassword'),
         is_superuser=True,
         is_staff=True,
