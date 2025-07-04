@@ -1,13 +1,7 @@
-services:
-  - type: web
-    name: resume-backend
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn resume_backend.wsgi:application
-    plan: free
-    region: oregon
-    branch: main
-    autoDeploy: true
-    postDeployCommand: |
-      python manage.py migrate
-      python manage.py collectstatic --noinput
+postDeployCommand: |
+  echo "🚀 Running Migrations..."
+  python manage.py migrate
+  echo "✅ Migrations done"
+  echo "🎨 Collecting static files..."
+  python manage.py collectstatic --noinput
+  echo "✅ Static files done"
