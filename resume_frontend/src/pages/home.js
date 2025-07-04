@@ -334,8 +334,7 @@ import { FAQSection } from "./faq";
 import img1 from "./img1.png";
 import { Chatbot } from "./chatbot.js";
 import { CircularProgress, Typography } from "@mui/material";
-
-
+import img2 from "./img2.png";
 function Home() {
   const [username, setusername] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -359,7 +358,7 @@ function Home() {
         } else {
           setProgress(current);
         }
-      }, 15); // adjust speed here
+      }, 15); 
       return () => clearInterval(interval);
     }
   }, [score]);
@@ -419,7 +418,7 @@ function Home() {
           setScore(data.score);
           showAlert("Analysis complete!", "success");
         } else {
-          showAlert(data.error || "Something went wrong.", "error");
+          showAlert(data.error || "Something went wrong", "error");
         }
       })
       .catch((err) => {
@@ -472,12 +471,11 @@ function Home() {
 
         <div className="right">
           <img
-            alt="img"
-            src="https://enhancv.com/_next/static/images/resume4-eb8e2bacc73eb143b714ffec42b44926.webp"
+            alt="img" src= {img2}
           />
         </div>
       </div>
-
+      
       <div className="down1">
         <h2>Will Your Resume Pass the ATS?</h2>
         <p>
@@ -521,6 +519,9 @@ function Home() {
               }}
             />
           </label>
+            <button onClick={handlescore} className="score-button">
+              Get Score
+            </button>
           {uploadedFile && (
             <p
               style={{
@@ -572,9 +573,6 @@ function Home() {
             </div>
           )}
 
-          <button onClick={handlescore} className="score-button">
-            Get Score
-          </button>
         </div>
       </div>
 
