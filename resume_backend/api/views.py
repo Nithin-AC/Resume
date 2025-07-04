@@ -230,19 +230,19 @@ class ResumeExtracter(APIView):
 
             Then continue with your analysis:
 
-            ### Missing Keywords
+             Missing Keywords
             (List technical/skill-based keywords from JD that are missing or weak)
 
-            ### Suggestions to Improve
+             Suggestions to Improve
             (Give detailed, actionable suggestions to improve resume, GitHub, or alignment)
 
-            ### ATS-Friendliness Feedback
+             ATS-Friendliness Feedback
             (Check for formatting, keywords, readability for ATS tools)
 
-            ### GitHub Review
+             GitHub Review
             (Analyze each project, code quality, relevance, readme, etc.)
 
-            ### LinkedIn Suggestions
+             LinkedIn Suggestions
             (Evaluate headline, about, experience, and projects)
 
             ---
