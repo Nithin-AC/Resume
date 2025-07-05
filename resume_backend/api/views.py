@@ -339,3 +339,5 @@ class ProfileUpdate(APIView):
         return Response(serializers.data, status=200) 
 def home(request):
    return HttpResponse("Deployed!") 
+def health_check(request):
+    return HttpResponse("OK", status=200)
