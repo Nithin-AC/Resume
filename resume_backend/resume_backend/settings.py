@@ -16,7 +16,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "your-local-dev-secret")
 DEBUG = False
 
 # Allowed hosts
-ALLOWED_HOSTS = ["resume-4hsf.onrender.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Installed apps
