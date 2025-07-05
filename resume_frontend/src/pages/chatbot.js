@@ -23,7 +23,7 @@ function Chatbot({ onClose }) {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://127.0.0.1:8000/api/gemini-chat/", {
+      const res = await fetch("https://resume-4hsf.onrender.com/api/gemini-chat/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

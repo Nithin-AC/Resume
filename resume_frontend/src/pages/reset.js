@@ -208,7 +208,7 @@ function Reset() {
       return;
     }
 
-    fetch("http://127.0.0.1:8000/api/change-password/", {
+    fetch("https://resume-4hsf.onrender.com/api/change-password/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

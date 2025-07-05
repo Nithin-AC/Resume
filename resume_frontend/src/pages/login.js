@@ -186,7 +186,7 @@ function Login() {
       return;
     }
 
-    fetch("http://127.0.0.1:8000/api/token/", {
+    fetch("https://resume-4hsf.onrender.com/api/token/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -214,7 +214,7 @@ function Login() {
   const handleGoogleSuccess = (credentialResponse) => {
     const id_token = credentialResponse.credential;
 
-    fetch("http://127.0.0.1:8000/api/auth/google/", {
+    fetch("https://resume-4hsf.onrender.com/api/auth/google/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

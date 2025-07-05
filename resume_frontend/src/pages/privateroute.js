@@ -26,7 +26,7 @@ function RequireAuth({ children }) {
     }
 
     else if (refresh && !isTokenExpired(refresh)) {
-      fetch("http://127.0.0.1:8000/api/token/refresh/", {
+      fetch("https://resume-4hsf.onrender.com/api/token/refresh/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -33,7 +33,7 @@ import { Contactus } from "./pages/contactus";
 import { Tips } from "./pages/tips";
 import { Aboutus } from "./pages/aboutus";
 import LoginModal from "./pages/loginmodal"; 
-import { HomeAuthGuard } from "./homeauth";
+import { HomeAuthGuard } from "./pages/homeauth";
 function App1() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const navigate = useNavigate();

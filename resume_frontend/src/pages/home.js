@@ -403,7 +403,7 @@ function Home() {
 
     const token = localStorage.getItem("token");
 
-    fetch("http://127.0.0.1:8000/api/extract/", {
+    fetch("https://resume-4hsf.onrender.com/api/extract/", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`

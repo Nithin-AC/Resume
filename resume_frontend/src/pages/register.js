@@ -145,7 +145,7 @@ function Register() {
 
   const adduser = () => {
     if (username && password && email) {
-      fetch("http://127.0.0.1:8000/api/register/", {
+      fetch("https://resume-4hsf.onrender.com/api/register/", {
         method: "POST",
         body: JSON.stringify({ username, password, email }),
         headers: {

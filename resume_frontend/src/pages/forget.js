@@ -373,7 +373,7 @@ function Forget() {
   };
 
   function sendOTP() {
-    fetch("http://127.0.0.1:8000/api/forgot-password/", {
+    fetch("https://resume-4hsf.onrender.com/api/forget-password/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -396,7 +396,7 @@ function Forget() {
 
   function verifyOTP() {
     const joinedOTP = otp.join("");
-    fetch("http://127.0.0.1:8000/api/verify-otp/", {
+    fetch("https://resume-4hsf.onrender.com/api/verify-otp/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ otp: joinedOTP }),
@@ -418,7 +418,7 @@ function Forget() {
   }
 
   function resetPassword() {
-    fetch("http://127.0.0.1:8000/api/reset/", {
+    fetch("https://resume-4hsf.onrender.com/api/reset/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
