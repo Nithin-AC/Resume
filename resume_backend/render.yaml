@@ -1,7 +1,0 @@
-postDeployCommand: |
-  echo "🚀 Running Migrations..."
-  python manage.py migrate
-  echo "✅ Migrations done"
-  echo "🎨 Collecting static files..."
-  python manage.py collectstatic --noinput
-  echo "✅ Static files done"
