@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.http import HttpResponse
 from rest_framework.views import APIView
 from rest_framework import generics
 from .models import Fruit
@@ -336,4 +337,5 @@ class ProfileUpdate(APIView):
         if serializers.is_valid():
             serializers.save()
         return Response(serializers.data, status=200) 
-    
+def home(request):
+   return HttpResponse("Deployed!") 
