@@ -3,6 +3,7 @@ from .views import *
 from django.conf.urls.static import static
 
 urlpatterns = [
+    
     path('fruits/', FruitList.as_view(), name='fruit-list'),
     path('fruits/<int:pk>',FruitOp.as_view()),
     path('register/',Register.as_view()),
