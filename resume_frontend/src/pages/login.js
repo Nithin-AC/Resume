@@ -241,7 +241,6 @@ function Login() {
 
   return (
     <div className="loginout animate-swap">
-      {/* Snackbar Alert */}
       <Snackbar
         open={alertOpen}
         autoHideDuration={4000}
