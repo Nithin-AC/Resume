@@ -178,7 +178,6 @@ function Navbar({ onProtectedClick }) {
     { label: "About us", path: "/aboutus" },
     { label: "Tips to build resume", path: "/tips" },
     { label: "Contact us", path: "/contactus" },
-    // ProtectedPage handled separately below
   ];
 
   const handleProtectedPageClick = () => {
@@ -188,7 +187,7 @@ function Navbar({ onProtectedClick }) {
       navigate("/protectedpage");
     } else {
       if (onProtectedClick) {
-        onProtectedClick(); // trigger modal from App1
+        onProtectedClick(); 
       }
     }
   };
@@ -250,7 +249,7 @@ function Navbar({ onProtectedClick }) {
               </ListItem>
             ))}
             <ListItem button onClick={handleProtectedPageClick}>
-              <ListItemText primary="ProtectedPage" />
+              <ListItemText primary="Profile" />
             </ListItem>
           </List>
         </Box>

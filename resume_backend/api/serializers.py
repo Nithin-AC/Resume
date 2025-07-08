@@ -51,8 +51,10 @@ class ChangePasswordSerializer(serializers.Serializer):
         user = self.context['request'].user
         user.set_password(self.validated_data['new_password'])
         user.save()
+        
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
         fields=['username','dateofbirth','email','phn','first_name','last_name','photo']
         read_only_fields = ['username']
+

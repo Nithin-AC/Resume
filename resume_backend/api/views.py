@@ -337,6 +337,7 @@ class ProfileUpdate(APIView):
         if serializers.is_valid():
             serializers.save()
         return Response(serializers.data, status=200) 
+    
 from django.http import HttpResponse
 import logging
 
@@ -348,3 +349,5 @@ def home(request):
 
 def health_check(request):
     return HttpResponse("OK", status=200)
+
+
