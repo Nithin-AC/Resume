@@ -134,6 +134,7 @@ function Register() {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const [alertType, setAlertType] = useState("info");
+  const [loadingLogin, setLoadingLogin] = useState(false);
 
   const navigate = useNavigate();
 
@@ -143,8 +144,40 @@ function Register() {
     setAlertOpen(true);
   };
 
+  // const adduser = () => {
+  //   if (username && password && email) {
+  //     fetch("https://resume-4hsf.onrender.com/api/register/", {
+  //       method: "POST",
+  //       body: JSON.stringify({ username, password, email }),
+  //       headers: {
+  //         "Content-Type": "application/json; charset=UTF-8"
+  //       }
+  //     })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         if (data.tokens && data.tokens.access && data.tokens.refresh) {
+  //           localStorage.setItem("token", data.tokens.access);
+  //           localStorage.setItem("refreshtoken", data.tokens.refresh);
+  //           localStorage.setItem("username", username);
+  //           localStorage.setItem("loginType", "manual");
+  //           showAlert("Registration successful!", "success");
+  //           setTimeout(() => navigate("/home"), 1000);
+  //         } else {
+  //           showAlert("Registration failed", "error");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         console.error("Error:", err);
+  //         showAlert("Something went wrong", "error");
+  //       });
+  //   } else {
+  //     showAlert("Please fill all fields", "warning");
+  //   }
+  // };
   const adduser = () => {
     if (username && password && email) {
+      setLoadingLogin(true); // 🔴 Start loading
+  
       fetch("https://resume-4hsf.onrender.com/api/register/", {
         method: "POST",
         body: JSON.stringify({ username, password, email }),
@@ -168,12 +201,13 @@ function Register() {
         .catch((err) => {
           console.error("Error:", err);
           showAlert("Something went wrong", "error");
-        });
+        })
+        .finally(() => setLoadingLogin(false)); // 🔵 Stop loading in both success/fail
     } else {
       showAlert("Please fill all fields", "warning");
     }
   };
-
+  
   return (
     <>
       <Snackbar
@@ -239,9 +273,12 @@ function Register() {
               fullWidth
               margin="normal"
             />
-            <button className="login-button" onClick={adduser}>
+            {/* <button className="login-button" onClick={adduser}>
               Register
-            </button>
+            </button> */}
+            <button className="login-button" onClick={adduser} disabled={loadingLogin}>
+            {loadingLogin ? "please wait" : "Register"}
+          </button>
             <div className="login-links">
               <p>Already have an account?</p>
               <button

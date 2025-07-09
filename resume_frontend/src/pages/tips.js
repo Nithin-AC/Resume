@@ -16,7 +16,6 @@ function Tips() {
           title: "2. Use Keywords from the Job Description",
           points: [
             "Match skills exactly as written in the job ad",
-            "Use both acronyms and full forms (e.g., 'SEO' and 'Search Engine Optimization')",
             "Tailor your resume for each job",
             "Place keywords in both experience and skills sections"
           ],

@@ -173,6 +173,7 @@ function Login() {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const [alertType, setAlertType] = useState("info");
+  const [loadingLogin, setLoadingLogin] = useState(false);
 
   const showAlert = (msg, type = "info") => {
     setAlertMsg(msg);
@@ -180,12 +181,44 @@ function Login() {
     setAlertOpen(true);
   };
 
+  // const handleLogin = () => {
+  //   if (!username || !password) {
+  //     showAlert("Please fill in all fields", "warning");
+  //     return;
+  //   }
+
+  //   fetch("https://resume-4hsf.onrender.com/api/token/", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json"
+  //     },
+  //     body: JSON.stringify({ username, password })
+  //   })
+  //     .then(async res => {
+  //       const data = await res.json();
+  //       if (res.ok && data.access) {
+  //         localStorage.setItem("token", data.access);
+  //         localStorage.setItem("refreshtoken", data.refresh);
+  //         localStorage.setItem("username", username);
+  //         localStorage.setItem("loginType", "manual");
+  //         navigate("/home");
+  //       } else {
+  //         showAlert(data.detail || "Login failed", "error");
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error("Login error:", err);
+  //       showAlert("Something went wrong", "error");
+  //     });
+  // };
   const handleLogin = () => {
     if (!username || !password) {
       showAlert("Please fill in all fields", "warning");
       return;
     }
-
+  
+    setLoadingLogin(true); // Start loading
+  
     fetch("https://resume-4hsf.onrender.com/api/token/", {
       method: "POST",
       headers: {
@@ -208,9 +241,12 @@ function Login() {
       .catch(err => {
         console.error("Login error:", err);
         showAlert("Something went wrong", "error");
+      })
+      .finally(() => {
+        setLoadingLogin(false); // Stop loading
       });
   };
-
+  
   const handleGoogleSuccess = (credentialResponse) => {
     const id_token = credentialResponse.credential;
 
@@ -294,7 +330,10 @@ function Login() {
           <button className="secondary-button" onClick={() => navigate("/forget")}>Forgot Password</button>
         </div>
 
-        <button className="login-button" onClick={handleLogin}>Login</button>
+        {/* <button className="login-button" onClick={handleLogin}>Login</button> */}
+        <button className="login-button" onClick={handleLogin} disabled={loadingLogin}>
+  {loadingLogin ? "please wait" : "Login"}
+</button>
 
         <div className="login-links">
           <p>Don't have an account?</p>

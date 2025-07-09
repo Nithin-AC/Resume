@@ -345,13 +345,39 @@ function Navbar({ onProtectedClick }) {
               Hironyx
             </Typography>
           </Box>
-
-          {/* Right: Login/Signup or Profile Avatar */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: { xs: 0.5, sm: 2 },
+            }}
+          >
             {!username ? (
               <>
-                <Button sx={{ color: "#0a192f" }} onClick={() => navigate("/login")}>Login</Button>
-                <Button sx={{ color: "#0a192f" }} onClick={() => navigate("/register")}>Sign Up</Button>
+                <Button
+                  className="navbutton"
+                  sx={{
+                    color: "#0a192f",
+                    fontSize: { xs: "0.7rem", sm: "1rem" },
+                    minWidth: "auto",
+                    padding: { xs: "4px 8px", sm: "6px 16px" }
+                  }}
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </Button>
+                <Button
+                  className="navbutton"
+                  sx={{
+                    color: "#0a192f",
+                    fontSize: { xs: "0.7rem", sm: "1rem" },
+                    minWidth: "auto",
+                    padding: { xs: "4px 8px", sm: "6px 16px" }
+                  }}
+                  onClick={() => navigate("/register")}
+                >
+                  Sign Up
+                </Button>
               </>
             ) : (
               <IconButton onClick={() => navigate("/protectedpage")}>
@@ -361,10 +387,10 @@ function Navbar({ onProtectedClick }) {
               </IconButton>
             )}
           </Box>
+
         </Toolbar>
       </AppBar>
 
-      {/* Drawer for Navigation */}
       <Drawer
         anchor="left"
         open={open}

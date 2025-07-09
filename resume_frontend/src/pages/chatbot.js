@@ -1,10 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../index.css"; 
+import "../index.css";
 
 function Chatbot({ onClose }) {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 700);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -14,15 +24,34 @@ function Chatbot({ onClose }) {
     scrollToBottom();
   }, [messages]);
 
+  const stripMarkdown = (text) => {
+    return text
+      .replace(/[*_~`#>]/g, "")
+      .replace(/\*\*(.*?)\*\*/g, "$1")
+      .replace(/\*(.*?)\*/g, "$1")
+      .replace(/_(.*?)_/g, "$1")
+      .replace(/`/g, "")
+      .replace(/\n\s*\n/g, "\n");
+  };
   const sendMessage = async () => {
     if (!input.trim()) return;
-
+  
+    const token = localStorage.getItem("token");
     const newMessages = [...messages, { role: "user", text: input }];
     setMessages(newMessages);
     setInput("");
-
+  
+    if (!token) {
+      setMessages((prev) => [
+        ...prev,
+        { role: "model", text: "Please log in to continue." },
+      ]);
+      return;
+    }
+  
+    setIsLoading(true);
+  
     try {
-      const token = localStorage.getItem("token");
       const res = await fetch("https://resume-4hsf.onrender.com/api/gemini-chat/", {
         method: "POST",
         headers: {
@@ -31,48 +60,62 @@ function Chatbot({ onClose }) {
         },
         body: JSON.stringify({ message: input }),
       });
-
+  
       const data = await res.json();
-      if (data.reply) {
-        setMessages((prev) => [...prev, { role: "model", text: data.reply }]);
-      } else {
-        setMessages((prev) => [...prev, { role: "model", text: "Kindly log in to begin your conversation."}]);
-      }
+      setIsLoading(false);
+      const cleanedText = stripMarkdown(data.reply || "Server error.");
+      setMessages((prev) => [...prev, { role: "model", text: cleanedText }]);
     } catch (error) {
       console.error("Chat error:", error);
+      setIsLoading(false);
       setMessages((prev) => [...prev, { role: "model", text: "Server error." }]);
     }
   };
+  
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") sendMessage();
   };
 
-  return (
-    <div className="chatbot-container">
-      <div className="chatbot-messages">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`chatbot-message ${msg.role === "user" ? "user" : "ai"}`}
-          >
-            <strong>{msg.role === "user" ? "You" : "Hironyx AI"}:</strong> {msg.text}
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
 
-      <div className="chatbot-input-container">
-        <input
-          type="text"
-          placeholder="Type your message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-        />
-        <button  onClick={sendMessage}>➤</button>
-      </div>
+  return (
+
+<div className={isMobile ? "chatbot-fullscreen" : "chatbot-container"}>
+  {isMobile && (
+    <div className="chatbot-header-bar">
+      <span className="chatbot-back">Hironyx Assistant</span>
+      <span className="chatbot-close-btn" onClick={onClose}>×</span>
     </div>
+  )}
+
+  <div className="chatbot-messages">
+    {messages.map((msg, index) => (
+      <div key={index} className={`chatbot-message ${msg.role === "user" ? "user" : "ai"}`}>
+        <div className="chat-message-content">{msg.text}</div>
+      </div>
+    ))}
+
+    {isLoading && (
+      <div className="chatbot-message ai">
+        <span className="typing-dot"></span>
+      </div>
+    )}
+
+    <div ref={messagesEndRef} />
+  </div>
+
+  <div className="chatbot-input-container">
+    <input
+      type="text"
+      placeholder="Type your message..."
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+      onKeyDown={handleKeyDown}
+    />
+    <button onClick={sendMessage}>➤</button>
+  </div>
+</div>
+
   );
 }
 

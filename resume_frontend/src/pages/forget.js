@@ -365,6 +365,7 @@ function Forget() {
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const [alertType, setAlertType] = useState("info");
+  const [loadingOtp, setLoadingOtp] = useState(false);
 
   const showAlert = (msg, type = "info") => {
     setAlertMsg(msg);
@@ -372,8 +373,30 @@ function Forget() {
     setAlertOpen(true);
   };
 
+  // function sendOTP() {
+  //   fetch("https://resume-4hsf.onrender.com/api/forget-password/", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ email }),
+  //     credentials: "include"
+  //   })
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       if (data.message) {
+  //         showAlert("OTP sent to your email", "success");
+  //         setstep(2);
+  //       } else {
+  //         showAlert(data.error || "Error sending OTP", "error");
+  //       }
+  //     })
+  //     .catch(err => {
+  //       console.error("OTP error:", err);
+  //       showAlert("Server error while sending OTP", "error");
+  //     });
+  // }
   function sendOTP() {
-    fetch("https://resume-4hsf.onrender.com/api/forget-password/", {
+    setLoadingOtp(true);
+    fetch("https://resume-4hsf.onrender.com/api/forgot-password/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -391,9 +414,10 @@ function Forget() {
       .catch(err => {
         console.error("OTP error:", err);
         showAlert("Server error while sending OTP", "error");
-      });
+      })
+      .finally(() => setLoadingOtp(false));
   }
-
+  
   function verifyOTP() {
     const joinedOTP = otp.join("");
     fetch("https://resume-4hsf.onrender.com/api/verify-otp/", {
@@ -488,7 +512,11 @@ function Forget() {
               placeholder="Enter email"
               className="emailinput"
             />
-            <button className="login-button" onClick={sendOTP} disabled={!email}>Send OTP</button>
+            {/* <button className="login-button" onClick={sendOTP} disabled={!email}>Send OTP</button> */}
+            <button className="login-button" onClick={sendOTP} disabled={!email || loadingOtp}>
+  {loadingOtp ? "Sending..." : "Send OTP"}
+</button>
+
             <button className="login-button" onClick={() => navigate("/login")}>Back to login</button>
           </div>
         </div>
