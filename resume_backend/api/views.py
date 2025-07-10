@@ -357,7 +357,15 @@ from django.http import HttpResponse
 
 def create_admin(request):
     User = get_user_model()
-    if not User.objects.filter(username="A.C.Nithin").exists():
-        User.objects.create_superuser("A.C.Nithin", "acnithin14@gmail.com", "Pavan@1428#")
-        return HttpResponse("Superuser created.")
-    return HttpResponse("Superuser already exists.")
+    try:
+        if not User.objects.filter(username="A.C.Nithin").exists():
+            User.objects.create_superuser(
+                username="A.C.Nithin",
+                email="acnithin14@gmail.com",
+                password="Pavan@1428#"
+            )
+            return HttpResponse("Superuser created.")
+        return HttpResponse("Superuser already exists.")
+    except Exception as e:
+        return HttpResponse(f"Error: {e}", status=500)
+

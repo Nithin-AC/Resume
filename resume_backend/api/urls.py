@@ -3,7 +3,7 @@ from .views import *
 from django.conf.urls.static import static
 from django.conf import settings 
 urlpatterns = [
-    path('create-admin/', create_admin),
+    
 
     path('fruits/', FruitList.as_view(), name='fruit-list'),
     path('fruits/<int:pk>',FruitOp.as_view()),

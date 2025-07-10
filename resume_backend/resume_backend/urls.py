@@ -23,6 +23,7 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
+    path('create-admin/', create_admin),
     path("health/", health_check),
     path("",home),
     path('admin/', admin.site.urls),
