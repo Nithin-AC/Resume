@@ -355,24 +355,22 @@ function Navbar({ onProtectedClick }) {
             {!username ? (
               <>
                 <Button
-                  className="navbutton"
                   sx={{
                     color: "#0a192f",
                     fontSize: { xs: "0.7rem", sm: "1rem" },
                     minWidth: "auto",
-                    padding: { xs: "4px 8px", sm: "6px 16px" }
+                    padding: { xs: "2px 5px", sm: "6px 1px" }
                   }}
                   onClick={() => navigate("/login")}
                 >
                   Login
                 </Button>
                 <Button
-                  className="navbutton"
                   sx={{
                     color: "#0a192f",
                     fontSize: { xs: "0.7rem", sm: "1rem" },
                     minWidth: "auto",
-                    padding: { xs: "4px 8px", sm: "6px 16px" }
+                    padding: { xs: "2px 5px", sm: "6px 1px" }
                   }}
                   onClick={() => navigate("/register")}
                 >
