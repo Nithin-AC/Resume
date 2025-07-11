@@ -1911,15 +1911,15 @@ a{
 }
 
 .circle-progress.high svg circle {
-  stroke: #4caf50 !important; /* green */
+  stroke: #4caf50;
 }
 
 .circle-progress.medium svg circle {
-  stroke: #ff9800 !important; /* orange */
+  stroke: #ff9800;
 }
 
 .circle-progress.low svg circle {
-  stroke: #f44336 !important; /* red */
+  stroke: #f44336;
 }
 
 /* score */
@@ -2207,8 +2207,8 @@ a{
   }
 
   .bell-swing {
-    left: 10% !important;
-    transform: none !important;
+    left: 10% ;
+    transform: none ;
   }
 }
 
@@ -2219,8 +2219,8 @@ a{
 
   .tip-card {
     width: 95%;
-    left: 2.5% !important;
-    right: auto !important;
+    left: 2.5% ;
+    right: auto ;
   }
 
   .card-content h3 {
@@ -2228,8 +2228,8 @@ a{
   }
 
   .bell-swing {
-    left: 8% !important;
-    transform: none !important;
+    left: 8% ;
+    transform: none;
   }
 }
 

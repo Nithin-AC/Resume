@@ -1,5 +1,5 @@
 import React from "react";
-import "../index.css"; // custom CSS we'll define
+import "../index.css"; 
 
 function Aboutus() {
   return (
