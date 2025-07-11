@@ -41,6 +41,7 @@ function Protectedpage() {
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch profile");
         return res.json();
+        
       })
       .then((data) => {
         setProfile((prev) => ({ ...prev, ...data }));
@@ -55,6 +56,7 @@ function Protectedpage() {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
+  
   const handleSave = () => {
     setSaving(true);
     const token = localStorage.getItem("token");
@@ -82,9 +84,26 @@ function Protectedpage() {
         }
         showAlert("Profile updated successfully", "success");
       })
-      .catch((err) => {
+      .catch(async (err) => {
         console.error("Update failed:", err);
-        showAlert("Update failed: " + err.message, "error");
+      
+        if (err.response) {
+          const errorData = await err.response.json();
+      
+          if (errorData.errors) {
+            const messages = Object.entries(errorData.errors)
+              .map(([field, msgs]) => `${field}: ${msgs.join(", ")}`)
+              .join("\n");
+      
+            showAlert("Update failed:\n" + messages, "error");
+          } else if (errorData.message) {
+            showAlert("Update failed: " + errorData.message, "error");
+          } else {
+            showAlert("Update failed: Unknown error", "error");
+          }
+        } else {
+          showAlert("Update failed: Network error or server is down or Email Already in use", "error");
+        }
       })
       .finally(() => setSaving(false));
   };
