@@ -336,6 +336,8 @@ class ProfileUpdate(APIView):
         serializers=ProfileSerializer(request.user,data=request.data,partial=True) 
         if serializers.is_valid():
             serializers.save()
+        else:
+            return Response(serializers.errors)
         return Response(serializers.data, status=200) 
     
 from django.http import HttpResponse
