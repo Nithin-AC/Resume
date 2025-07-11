@@ -326,19 +326,31 @@ class gemini_chat(APIView):
         except  Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 class ProfileUpdate(APIView):
-    permission_classes=[IsAuthenticated]
-    def get(self,request):
-        queryset=User.objects.all()
-        serializer=ProfileSerializer(request.user)
-        return Response(serializer.data, status=200)    
-    def patch(self,request):
-        serializers=ProfileSerializer(request.user,data=request.data,partial=True) 
-        if serializers.is_valid():
-            serializers.save()
-        else:
-            return Response(serializers.errors)
-        return Response(serializers.data, status=200) 
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = ProfileSerializer(request.user)
+        return Response(serializer.data, status=200)
+
+    def patch(self, request):
+        serializer = ProfileSerializer(request.user, data=request.data, partial=True)
+        if not serializer.is_valid():
+            return Response({
+                'message': 'Validation failed',
+                'errors': serializer.errors
+            }, status=400)
+
+        serializer.save()
+        return Response({
+            'message': 'Profile updated successfully',
+            'data': serializer.data
+        }, status=200)
+
     
 from django.http import HttpResponse
 import logging
