@@ -36,18 +36,18 @@ function HomeAuthGuard({ children }) {
             setIsValid(true);
           } else {
             localStorage.clear();
-            navigate("/"); // redirect to default home
+            navigate("/"); 
           }
           setAuthChecked(true);
         })
         .catch(() => {
           localStorage.clear();
-          navigate("/"); // redirect on refresh error
+          navigate("/"); 
           setAuthChecked(true);
         });
     } else {
       localStorage.clear();
-      navigate("/"); // redirect on total expiry
+      navigate("/"); 
       setAuthChecked(true);
     }
   }, [navigate]);
