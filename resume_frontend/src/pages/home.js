@@ -19,6 +19,7 @@ function isTokenExpired(token) {
   }
 }
 
+
 function Home() {
   const [username, setusername] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -32,8 +33,10 @@ function Home() {
   const [alertType, setAlertType] = useState("info");
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
 
   function parseAnalysisText(rawText) {
+    
     const sections = {};
     let currentSection = null;
     const lines = rawText.split("\n");
@@ -132,7 +135,7 @@ function Home() {
     if (!access || isTokenExpired(access)) {
       if (refresh && !isTokenExpired(refresh)) {
         try {
-          const res = await fetch("https://resume-4hsf.onrender.com/api/token/refresh/", {
+          const res = await fetch(`${API_URL}/api/token/refresh/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ refresh })
@@ -162,7 +165,7 @@ function Home() {
       formData.append("resume", uploadedFileObj);
       formData.append("description", jobDescription);
 
-      const res = await fetch("https://resume-4hsf.onrender.com/api/extract/", {
+      const res = await fetch(`${API_URL}/api/extract/`, {
         method: "POST",
         headers: { Authorization: `Bearer ${access}` },
         body: formData

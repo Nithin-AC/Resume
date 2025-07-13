@@ -14,21 +14,24 @@ function Forget() {
   const navigate = useNavigate();
   const inputRefs = useRef([]);
 
+
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const [alertType, setAlertType] = useState("info");
   const [loadingOtp, setLoadingOtp] = useState(false);
   const [loadingReset, setLoadingReset] = useState(false);
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
 
   function resetPassword() {
     setLoadingReset(true);
-    fetch("https://resume-4hsf.onrender.com/api/reset/", {
+    fetch(`${API_URL}/api/reset/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({
         email: email,
         new_password: password
+        
       })
     })
       .then(async res => {
@@ -57,7 +60,7 @@ function Forget() {
 
   function sendOTP() {
     setLoadingOtp(true);
-    fetch("https://resume-4hsf.onrender.com/api/forgot-password/", {
+    fetch(`${API_URL}/api/forgot-password/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -81,7 +84,7 @@ function Forget() {
   
   function verifyOTP() {
     const joinedOTP = otp.join("");
-    fetch("https://resume-4hsf.onrender.com/api/verify-otp/", {
+    fetch(`${API_URL}/api/verify-otp/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ otp: joinedOTP }),

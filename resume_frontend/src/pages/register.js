@@ -15,20 +15,22 @@ function Register() {
   const [alertMsg, setAlertMsg] = useState("");
   const [alertType, setAlertType] = useState("info");
   const [loadingLogin, setLoadingLogin] = useState(false);
-
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
+
 
   const showAlert = (msg, type = "info") => {
     setAlertMsg(msg);
     setAlertType(type);
     setAlertOpen(true);
   };
+  
 
   const adduser = () => {
     if (username && password && email) {
       setLoadingLogin(true); 
   
-      fetch("https://resume-4hsf.onrender.com/api/register/", {
+      fetch(`${API_URL}/api/register/`, {
         method: "POST",
         body: JSON.stringify({ username, password, email }),
         headers: {

@@ -15,7 +15,7 @@ function RequireAuth({ children }) {
   const [authChecked, setAuthChecked] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
   useEffect(() => {
     const access = localStorage.getItem("token");
     const refresh = localStorage.getItem("refreshtoken");
@@ -23,8 +23,9 @@ function RequireAuth({ children }) {
     if (access && !isTokenExpired(access)) {
       setIsValid(true);
       setAuthChecked(true);
+
     } else if (refresh && !isTokenExpired(refresh)) {
-      fetch("https://resume-4hsf.onrender.com/api/token/refresh/", {
+      fetch(`${API_URL}/api/token/refresh/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh })
@@ -63,6 +64,7 @@ function RequireAuth({ children }) {
         <LoginModal onSuccess={() => {
           setShowLogin(false);
           setIsValid(true);
+
         }} />
       )}
     </>
@@ -70,3 +72,4 @@ function RequireAuth({ children }) {
 }
 
 export { RequireAuth };
+

@@ -6,7 +6,6 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { deepOrange } from "@mui/material/colors";
 
-const BACKEND_URL = "https://resume-4hsf.onrender.com";
 
 function Protectedpage() {
   const [profile, setProfile] = useState({
@@ -18,21 +17,22 @@ function Protectedpage() {
     dateofbirth: "",
   });
   const [saving, setSaving] = useState(false);
-
+  
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMsg, setAlertMsg] = useState("");
   const [alertType, setAlertType] = useState("info");
-
+  
   const showAlert = (msg, type = "info") => {
     setAlertMsg(msg);
     setAlertType(type);
     setAlertOpen(true);
   };
-
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
-
-    fetch(`${BACKEND_URL}/api/profile/`, {
+    const API_URL = process.env.REACT_APP_BACKEND_URL;
+    
+    fetch(`${API_URL}/api/profile/`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ function Protectedpage() {
   const handleSave = () => {
     setSaving(true);
     const token = localStorage.getItem("token");
-  
+    const API_URL = process.env.REACT_APP_BACKEND_URL;
     const updatedData = {
       first_name: profile.first_name,
       last_name: profile.last_name,
@@ -68,8 +68,9 @@ function Protectedpage() {
       phn: profile.phn,
       dateofbirth: profile.dateofbirth,
     };
+    
   
-    fetch(`${BACKEND_URL}/api/profile/`, {
+    fetch(`${API_URL}/api/profile/`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,

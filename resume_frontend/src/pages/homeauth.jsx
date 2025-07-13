@@ -15,16 +15,19 @@ function HomeAuthGuard({ children }) {
   const [authChecked, setAuthChecked] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const navigate = useNavigate();
-
   useEffect(() => {
+    const API_URL = process.env.REACT_APP_BACKEND_URL;
+  
     const access = localStorage.getItem("token");
+
     const refresh = localStorage.getItem("refreshtoken");
 
+    
     if (access && !isTokenExpired(access)) {
       setIsValid(true);
       setAuthChecked(true);
     } else if (refresh && !isTokenExpired(refresh)) {
-      fetch("https://resume-4hsf.onrender.com/api/token/refresh/", {
+      fetch(`${API_URL}/api/token/refresh/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh })

@@ -14,8 +14,8 @@ function Reset() {
   const [alertMsg, setAlertMsg] = useState("");
   const [alertType, setAlertType] = useState("info");
   const [loading, setLoading] = useState(false);
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
-
   const showAlert = (msg, type = "info") => {
     setAlertMsg(msg);
     setAlertType(type);
@@ -29,9 +29,10 @@ function Reset() {
       return;
     }
 
+
     setLoading(true);
 
-    fetch("https://resume-4hsf.onrender.com/api/change-password/", {
+    fetch(`${API_URL}/api/change-password/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

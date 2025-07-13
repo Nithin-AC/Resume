@@ -18,6 +18,7 @@ function Chatbot({ onClose }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 700);
   const messagesEndRef = useRef(null);
 
+  const API_URL = process.env.REACT_APP_BACKEND_URL;
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 700);
@@ -25,6 +26,7 @@ function Chatbot({ onClose }) {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+  
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -53,7 +55,7 @@ function Chatbot({ onClose }) {
     if (!token || isTokenExpired(token)) {
       if (refresh && !isTokenExpired(refresh)) {
         try {
-          const res = await fetch("https://resume-4hsf.onrender.com/api/token/refresh/", {
+          const res = await fetch(`${API_URL}/api/token/refresh/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ refresh })
@@ -82,7 +84,7 @@ function Chatbot({ onClose }) {
     setIsLoading(true);
 
     try {
-      const res = await fetch("https://resume-4hsf.onrender.com/api/gemini-chat/", {
+      const res = await fetch(`${API_URL}/api/gemini-chat/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

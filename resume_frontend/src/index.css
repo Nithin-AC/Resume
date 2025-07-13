@@ -14,8 +14,6 @@ html, body {
   overflow-x: hidden;
 }
 
-
-
 .navbar {
   display: flex;
   justify-content: flex-end;
@@ -1004,6 +1002,7 @@ html, body {
     border-radius: 0;
     height: auto;
     height: 550px;
+    margin-top: 60px;
   }
   
   .login-heading {
@@ -1053,8 +1052,8 @@ html, body {
     box-shadow: none;
     height: 550px;
     padding-top: 70px;
+    margin-top: 60px;
   }
-  
   .login-heading {
     font-size: 20px;
   }

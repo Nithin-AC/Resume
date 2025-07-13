@@ -17,6 +17,7 @@ function Login() {
   const [alertMsg, setAlertMsg] = useState("");
   const [alertType, setAlertType] = useState("info");
   const [loadingLogin, setLoadingLogin] = useState(false);
+    const API_URL = process.env.REACT_APP_BACKEND_URL;
 
   const showAlert = (msg, type = "info") => {
     setAlertMsg(msg);
@@ -25,6 +26,7 @@ function Login() {
   };
 
 
+  
   const handleLogin = () => {
     if (!username || !password) {
       showAlert("Please fill in all fields", "warning");
@@ -33,7 +35,7 @@ function Login() {
   
     setLoadingLogin(true); 
   
-    fetch("https://resume-4hsf.onrender.com/api/token/", {
+    fetch(`${API_URL}/api/token/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -64,7 +66,7 @@ function Login() {
   const handleGoogleSuccess = (credentialResponse) => {
     const id_token = credentialResponse.credential;
 
-    fetch("https://resume-4hsf.onrender.com/api/auth/google/", {
+    fetch(`${API_URL}/api/auth/google/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
