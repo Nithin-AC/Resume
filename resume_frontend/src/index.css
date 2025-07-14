@@ -984,7 +984,9 @@ html, body {
 }
 @media (max-width:900px) {
   .login-container {
-    height: 640px;
+    margin-top: 200px;
+    height: 700px;
+    padding-top: 130px;
   }
 }
 
@@ -1002,7 +1004,7 @@ html, body {
     border-radius: 0;
     height: auto;
     height: 550px;
-    margin-top: 60px;
+    margin-top: 70px;
   }
   
   .login-heading {
@@ -1030,10 +1032,12 @@ html, body {
   
   .login-links, .login-links1 {
     font-size: 12px;
-    text-align: center;
     width: 100%;
   }
-  
+  .login-links1{
+    position: relative;
+    right: 10px;
+  }
   .secondary-button {
     font-size: 12px;
     text-align: center;
@@ -1045,6 +1049,7 @@ html, body {
 }
 
 
+
 @media (max-width: 400px) {
   .login-container {
     padding: 20px 10px;
@@ -1052,7 +1057,7 @@ html, body {
     box-shadow: none;
     height: 550px;
     padding-top: 70px;
-    margin-top: 60px;
+    margin-top: 70px;
   }
   .login-heading {
     font-size: 20px;
